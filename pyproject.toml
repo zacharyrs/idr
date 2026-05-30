@@ -1,0 +1,43 @@
+[build-system]
+requires = [
+    "setuptools>=77",
+    "wheel",
+    "Cython>=3.1",
+    "numpy==2.3.5",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "idr"
+dynamic = ["version"]
+description = "IDR is a method for measuring the reproducibility of replicated ChIP-seq type experiments and providing a stable measure of the reproducibility of identified peaks."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "GPL-3.0-or-later"
+keywords = ["IDR"]
+authors = [
+    { name = "Nathan Boley", email = "npboley@gmail.com" },
+]
+dependencies = [
+    "scipy>=0.13.0",
+    "numpy==2.3.5",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.urls]
+Homepage = "https://github.com/nboley/idr"
+
+[project.optional-dependencies]
+PLOT = ["matplotlib"]
+
+[tool.setuptools]
+packages = ["idr"]
+script-files = ["bin/idr"]
+
+[tool.setuptools.dynamic]
+version = { attr = "idr.__version__" }
