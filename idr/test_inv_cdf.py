@@ -1,28 +1,14 @@
-import os, sys
-
 import math
 
 import numpy
 
-from scipy.special import erf, erfinv
-from scipy.optimize import bisect, brentq
+from idr.utility import py_cdf
+from idr.inv_cdf import cdf, cdf_i, cdf_d1, c_compute_pseudo_values
 
-import timeit
 
-import pyximport; pyximport.install()
-from utility import (
-    py_compute_pseudo_values, compute_pseudo_values, 
-    simulate_values, py_cdf, py_cdf_i )
-from inv_cdf import cdf, cdf_i, cdf_d1, c_compute_pseudo_values, c_compute_pseudo_values_old
 def compute_pseudo_values(r, mu, sigma, rho):
     z = numpy.zeros(len(r), dtype=float)
-    res = c_compute_pseudo_values(r, z, mu, sigma, rho)
-    return res
-
-def compute_pseudo_values_old(r, mu, sigma, rho):
-    z = numpy.zeros(len(r), dtype=float)
-    res = c_compute_pseudo_values_old(r, z, mu, sigma, rho)
-    return res
+    return c_compute_pseudo_values(r, z, mu, sigma, rho)
 
 
 def symbolic_computations():
@@ -129,11 +115,10 @@ def py_cdf_d1_and_2(x, mu, sigma, lamda):
 
 def test_deriv():
     for x in range(10):
-        print( py_cdf_d1_simple( x, 0, 1, 0.5 ) )
-        print( py_cdf_d1( x, 0, 1, 0.5 ) )
-        print( cdf_d1( x, 0, 1, 0.5 ))
-        print( FD_d1( x, 0, 1, 0.5 ) )
-        print()
+        fd = FD_d1(x, 0, 1, 0.5)
+        assert abs(py_cdf_d1(x, 0, 1, 0.5) - fd) < 1e-5
+        assert abs(py_cdf_d1_simple(x, 0, 1, 0.5) - fd) < 1e-5
+        assert abs(cdf_d1(x, 0, 1, 0.5) - fd) < 1e-5
 
 ################################################################################
 #
@@ -156,39 +141,14 @@ def halley_step(x, mu, sigma, lamda, r):
     return x - num/(5*denom)
 
 
-def main():
-    mu, sigma, lamda = 1, 1, 0.9
-    r = 1e-1
-    new_x, x = -1.2, 1e9
-    i = 0
-    while i < 50 and abs(x - new_x) > 1e-6:
-        x = new_x
-        new_x = halley_step(x, mu, sigma, lamda, r)
-        print( "H", abs(x-new_x), x, new_x )
-        i += 1
+def test_cdf_inverse():
+    mu, sigma, lamda = 1.0, 1.0, 0.9
+    lb, ub = -10.0, 10.0
+    for r in [0.05, 0.1, 0.5, 0.9, 0.95]:
+        x = cdf_i(r, mu, sigma, lamda, lb, ub, 1e-12)
+        assert abs(cdf(x, mu, sigma, lamda) - r) < 1e-6
 
-    print( r-cdf( x, mu, sigma, lamda ), r, cdf( x, mu, sigma, lamda ) )
 
-main()
-assert False
-
-params = (1, 1, 0.9, 0.5)
-(r1_ranks, r2_ranks), (r1_values, r2_values) = simulate_values(
-    10000, params)
-
-def t1():
-    return compute_pseudo_values_old(r1_ranks, 1, 1, 0.5)
-
-def t2():
-    return compute_pseudo_values(r1_ranks, 1, 1, 0.5)
-    
-#print( timeit.timeit( "t1()", number=10, setup="from __main__ import t1"  ) )
-
-#print( timeit.timeit( "t2()", number=10, setup="from __main__ import t2"  ) )
-
-#test_i_cdf()
-
-#test_deriv()
-#main()
-
-#symbolic_computations()
+if __name__ == '__main__':
+    test_deriv()
+    test_cdf_inverse()
