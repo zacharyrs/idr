@@ -15,21 +15,20 @@ wget https://github.com/kundajelab/idr/archive/2.0.4.zip
 ```
 
 * Install the dependencies
-- python3
-- python3 headers 
-- numpy
-- setuptools
+- python3 (>= 3.14)
+- python3 headers
+- numpy (2.3.5)
+- scipy
 - matplotlib (only required for plotting the results)
 
-In Ubuntu 14.04+ one can run: 
-(sudo) apt-get install python3-dev python3-numpy python3-setuptools python3-matplotlib
+The build dependencies (`setuptools`, `Cython` and `numpy`) are declared in
+`pyproject.toml` and are installed automatically by `pip` in an isolated build
+environment, so they do not need to be installed by hand.
 
-In a shared environment, the dependencies and idr package may need to be installed locally. [Anaconda](http://continuum.io/downloads#py34) largely automates this process. To install anaconda, which includes all the neessary dependencies:
+In Ubuntu one can install the Python headers with:
+(sudo) apt-get install python3-dev
 
-```
-Download [Anaconda3-2.2.0-Linux-x86_64.sh](http://continuum.io/downloads#py34) 
-bash Anaconda3-2.2.0-Linux-x86_64.sh
-```
+In a shared environment, the dependencies and idr package may need to be installed locally. [Anaconda](https://www.anaconda.com/download) largely automates this process.
 
 * Download and unzip the idr code
 ```
@@ -40,7 +39,7 @@ cd 2.0.4/
 
 * Then install idr 
 ```
-python3 setup.py install
+pip install .
 ```
 
 Usage

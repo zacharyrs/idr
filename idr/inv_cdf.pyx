@@ -67,7 +67,7 @@ def cdf_i(double r, double mu, double sigma, double lamda,
 @cython.wraparound(False)
 @cython.cdivision(True)
 def c_compute_pseudo_values(
-        np.ndarray[np.int_t, ndim=1] rs, 
+        np.ndarray[np.intp_t, ndim=1] rs, 
         np.ndarray[np.double_t, ndim=1] zs, 
         double mu, double sigma, double lamda,
         double EPS):
