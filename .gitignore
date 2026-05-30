@@ -6,7 +6,7 @@ __pycache__/
 *.so
 
 # Cython-generated C files
-*.c
+idr/*.c
 
 # Distribution / packaging
 .Python
