@@ -34,7 +34,7 @@ Homepage = "https://github.com/nboley/idr"
 
 [project.optional-dependencies]
 PLOT = ["matplotlib"]
-test = ["pytest"]
+test = ["pytest", "sympy"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
